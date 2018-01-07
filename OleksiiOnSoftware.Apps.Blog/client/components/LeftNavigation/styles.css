@@ -1,0 +1,56 @@
+.navigation .brand .text {
+    color: #999999 !important;
+    cursor: pointer;
+}
+
+.navigation .brand .text:hover {
+    color: #FFFFFF !important;
+}
+
+.navigation .icons {
+    position: absolute;
+    bottom: 80px;
+    width: 150px;
+    text-align: center;
+    left: 0px;
+    transition: left 1s ease;
+}
+
+.navigation .icons i {
+    color: #999999 !important;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.navigation .icons i:hover {
+    color: #FFFFFF !important;
+    transform: scale(1.3);
+    cursor: pointer;
+}
+
+.navigation .links .link a {
+    color: #999999 !important;
+}
+
+.navigation .links .link a:hover a {
+    color: #FFFFFF !important;
+}
+
+.navigation .copyright {
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: width 1s ease, left 1s ease;
+}
+
+.navigation .copyright .copyright-icon {
+    color: #999999 !important;
+}
+
+.navigation .copyright .copyright-text {
+    color: #999999 !important;
+    font-size: 12px;
+}

@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/OleksiiOnSoftware.Services.Blog.Api/OleksiiOnSoftware.Services.Blog.Api.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OleksiiOnSoftware.Services.Blog.Domain\OleksiiOnSoftware.Services.Blog.Domain.csproj" />
+    <ProjectReference Include="..\OleksiiOnSoftware.Services.Blog.Dto\OleksiiOnSoftware.Services.Blog.Dto.csproj" />
+    <ProjectReference Include="..\OleksiiOnSoftware.Services.Blog.Query\OleksiiOnSoftware.Services.Blog.Query.csproj" />
+    <ProjectReference Include="..\OleksiiOnSoftware.Services.Common.Redis\OleksiiOnSoftware.Services.Common.Redis.csproj" />
+    <ProjectReference Include="..\OleksiiOnSoftware.Services.Common\OleksiiOnSoftware.Services.Common.csproj" />
+  </ItemGroup>
+</Project>

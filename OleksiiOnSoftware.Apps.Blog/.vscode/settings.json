@@ -1,0 +1,9 @@
+{
+    "javascript.validate.enable": false,
+    "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+    "javascript.format.insertSpaceAfterConstructor": true,
+    "jest.enableInlineErrorMessages": false,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+}

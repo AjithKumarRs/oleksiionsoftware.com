@@ -1,0 +1,38 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+  command_handler:
+    container_name: command_handler
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Services.Blog.CommandHandler/Dockerfile
+  event_handler:
+    container_name: event_handler
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Services.Blog.EventHandler/Dockerfile
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Services.Blog.Api/Dockerfile
+  web:
+    container_name: web
+    build: 
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Apps.Blog/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+  startup:
+    container_name: startup
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Services.Blog.Import/Dockerfile
