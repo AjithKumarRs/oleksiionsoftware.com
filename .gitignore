@@ -1,5 +1,6 @@
 #ignore thumbnails created by windows
 Thumbs.db
+
 #Ignore files build by Visual Studio
 *.user
 *.lock.json
@@ -23,3 +24,8 @@ _ReSharper*/
 .vs/*
 node_modules/*
 **/node_modules/*
+
+# Ignore supervisor files
+*.log
+*.pid
+

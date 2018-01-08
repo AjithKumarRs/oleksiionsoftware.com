@@ -4,7 +4,7 @@ services:
     container_name: nginx
     build:
       context: .
-      dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile      
+      dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile
     ports:
       - "80:80"
       - "443:443"
@@ -35,7 +35,7 @@ services:
       context: .
       dockerfile: ./OleksiiOnSoftware.Apps.Blog/Dockerfile
     environment: 
-      - NODE_ENV=development
+      - NODE_ENV=production
       - NODE_PORT=3000
       - NODE_HOSTNAME=0.0.0.0
     ports:

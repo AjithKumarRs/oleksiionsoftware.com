@@ -26,7 +26,12 @@ app.use(bodyParser.json())
 
 // Serve hot-reloading bundle to client
 app.use(webpackDevMiddleware(compiler, {
-  publicPath: webpackConfig.output.publicPath
+  publicPath: webpackConfig.output.publicPath,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000,
+    ignored: /node_modules/
+  }
 }))
 
 app.use(webpackHotMiddleware(compiler))
@@ -69,5 +74,5 @@ server.listen(process.env.NODE_PORT, process.env.NODE_HOSTNAME, function (err) {
 
   const addr = server.address()
 
-  console.log('Listening at http://%s:%d', addr.address, addr.port)
+  console.log('[%s]: Listening at http://%s:%d', process.env.NODE_ENV, addr.address, addr.port)
 })

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - "/c/Projects/oleksiionsoftware.com:/app"
+  startup:
+    command: ["bin/true"]
