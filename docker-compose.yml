@@ -4,7 +4,11 @@ services:
     container_name: nginx
     build:
       context: .
-      dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile
+      dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile      
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
   redis:
     container_name: redis
     image: "redis:alpine"
@@ -23,14 +27,19 @@ services:
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Services.Blog.Api/Dockerfile
+    ports:
+      - "5001:5001"
   web:
     container_name: web
     build: 
       context: .
       dockerfile: ./OleksiiOnSoftware.Apps.Blog/Dockerfile
+    environment: 
+      - NODE_ENV=development
+      - NODE_PORT=3000
+      - NODE_HOSTNAME=0.0.0.0
     ports:
-      - "80:80"
-      - "443:443"
+      - "3000:3000"
   startup:
     container_name: startup
     build:
