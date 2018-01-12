@@ -3,7 +3,9 @@ services:
   web:
     environment:
       - NODE_ENV=development
+      - API_PUBLIC_HOSTNAME=http://localhost
+      - API_INTERNAL_HOSTNAME=http://api:5001
     volumes:
       - "/c/Projects/oleksiionsoftware.com:/app"
-  startup:
-    command: ["bin/true"]
+    ports:
+      - "9229:9229"

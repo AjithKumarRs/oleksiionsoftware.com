@@ -38,10 +38,13 @@ services:
       - NODE_ENV=production
       - NODE_PORT=3000
       - NODE_HOSTNAME=0.0.0.0
+      - API_PUBLIC_HOSTNAME=http://oleksiionsoftware.com
+      - API_INTERNAL_HOSTNAME=http://api:5001
     ports:
       - "3000:3000"
   startup:
-    container_name: startup
+    container_name: startup    
+    restart: "no"
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Services.Blog.Import/Dockerfile
