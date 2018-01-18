@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node --inspect=0.0.0.0:9229 -r tsconfig-paths/register server.ts",
-    "build": "webpack",
-    "dev": "cross-env NODE_ENV=development ts-node --inspect=0.0.0.0:9229 -r tsconfig-paths/register server.ts",
-    "prod": "cross-env NODE_ENV=production NODE_PORT=80 ts-node --inspect=0.0.0.0:9229 -r tsconfig-paths/register server.ts"
+    "build": "webpack -p --config ./config/webpack.$NODE_ENV.config.ts",
+    "build:dev": "cross-env NODE_ENV=development npm run build",
+    "build:prod": "cross-env NODE_ENV=production npm run build"
   },
   "dependencies": {},
   "devDependencies": {

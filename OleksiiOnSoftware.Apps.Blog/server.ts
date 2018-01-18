@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 // Enable HMR in development mode
 if (process.env.NODE_ENV === "development") {
-  const config = require("./config/webpack.dev.config").default;
+  const config = require("./config/webpack.development.config").default;
   const compiler = webpack(config);
 
   // Serve hot-reloading bundle to client

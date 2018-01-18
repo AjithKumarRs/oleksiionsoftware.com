@@ -7,7 +7,8 @@ import { Plugin } from "tapable";
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 process.env.NODE_HOSTNAME = process.env.NODE_HOSTNAME || "localhost";
 process.env.NODE_PORT = process.env.NODE_PORT || "3000";
-process.env.API_HOSTNAME = process.env.API_HOSTNAME || "localhost";
+process.env.API_PUBLIC_HOSTNAME = process.env.API_PUBLIC_HOSTNAME || "localhost";
+process.env.API_INTERNAL_HOSTNAME = process.env.API_INTERNAL_HOSTNAME || "localhost";
 
 const context = path.resolve(__dirname, "../");
 

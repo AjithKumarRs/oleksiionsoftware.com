@@ -11,7 +11,7 @@ go_init()
 # Connect to docker cluster through SSH tunell
 go_connect_prod()
 {
-    ssh -p 22 -fNL 2374:localhost:2375 uda@clustermgmt.australiaeast.cloudapp.azure.com && export DOCKER_HOST=:2374
+    ssh -p 22 -fNL 2374:localhost:2375 uda@oleksiionsoftwaremgmt.australiaeast.cloudapp.azure.com && export DOCKER_HOST=:2374
 }
 
 # Connect to host docker engine
@@ -21,16 +21,19 @@ go_connect_host()
    export DOCKER_HOST='tcp://0.0.0.0:2375'
 }
 
-# Rebuild and update service:
-# $1 - Service name from docker-compose.yml file
-svc_update()
-{
-   docker-compose up -d --no-deps --build $1
+# Managing prod-cluster
+go_prod_build() {
+   rm -rf OleksiiOnSoftware.Apps.Blog/node_modules
+   rm -rf OleksiiOnSoftware.Apps.Blog/dist
+   docker-compose -f docker-compose.yml build
 }
 
-# Managing cluster
-go_prod_up() {
+go_prod_up__d() {
    docker-compose -f docker-compose.yml up -d
+}
+
+go_prod_down() {
+   docker-compose -f docker-compose.yml down
 }
 
 go_prod_update_web() {
