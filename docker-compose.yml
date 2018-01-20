@@ -43,8 +43,7 @@ services:
     ports:
       - "3000:3000"
   startup:
-    container_name: startup    
-    restart: "no"
+    container_name: startup
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Services.Blog.Import/Dockerfile

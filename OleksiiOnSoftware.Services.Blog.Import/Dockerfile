@@ -6,5 +6,3 @@ RUN dotnet restore && dotnet publish -c Release -o out
 RUN apt-get update && apt-get -y install git
 
 ENTRYPOINT [ "/bin/true" ]
-
-#ENTRYPOINT ["bash", "-c", "cd /app/OleksiiOnSoftware.Services.Blog.Import/out && dotnet OleksiiOnSoftware.Services.Blog.Import.dll"]

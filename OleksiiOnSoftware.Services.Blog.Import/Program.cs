@@ -10,14 +10,11 @@
     using Services.Impl.ContentTransformers;
     using System;
     using System.IO;
-    using System.Threading;
 
     public class Program
     {
         public static int Main(string[] args)
         {
-            Thread.Sleep(5000);
-
             var services = new ServiceCollection();
 
             var configuration = new ConfigurationBuilder()

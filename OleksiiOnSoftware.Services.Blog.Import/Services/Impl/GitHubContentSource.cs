@@ -57,17 +57,12 @@
                 var post = GetPost(postFile);
 
                 var dir = Path.GetDirectoryName(postFile);
-                _logger.LogInformation($"DIR: {dir}");
-
                 var repl = Repo;
-                _logger.LogInformation($"REP: {repl}");
-
                 post.RelativePath = dir.Replace(repl, string.Empty).Trim(Path.PathSeparator);
 
                 if (string.IsNullOrEmpty(post.Category))
                 {
                     post.Category = Path.GetDirectoryName(post.RelativePath);
-                    _logger.LogInformation($"CAT: {post.Category}");
                 }
 
                 blog.Posts.Add(post);
@@ -82,7 +77,7 @@
             var text = File.ReadAllText(file);
 
             var headingStartIndex = text.IndexOf('#');
-            var headingEndIndex = text.IndexOf('\r', headingStartIndex);
+            var headingEndIndex = text.IndexOfAny(new[] { '\r', '\n' }, headingStartIndex);
             var meta = text.Substring(0, headingStartIndex);
             var title = text.Substring(headingStartIndex, headingEndIndex - headingStartIndex);
             var content = text.Substring(headingEndIndex, text.Length - headingEndIndex);

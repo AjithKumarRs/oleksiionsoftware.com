@@ -6,10 +6,17 @@
             "command": "dotnet",
             "type": "process",
             "args": [
-                "build",
-                "${workspaceFolder}/OleksiiOnSoftware.Services.Blog.Api/OleksiiOnSoftware.Services.Blog.Api.csproj"
+                "publish",
+                "-c",
+                "Debug",
+                "-o",
+                "out"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
