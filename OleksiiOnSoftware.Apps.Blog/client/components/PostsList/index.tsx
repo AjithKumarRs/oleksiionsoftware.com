@@ -96,6 +96,11 @@ export class PostsList extends React.Component<Props & DispatchProps> {
     this.props.changePage(pageIndex, pageSize);
 
   render() {
+    const postsStyle = { ...style.posts, marginRight: "10px" };
+    if (this.props.isSidebarOpen) {
+      postsStyle.marginRight = "150px";
+    }
+
     return (
       <div className={"main-content"} style={style.mainContent}>
         <Sidebar
@@ -123,7 +128,7 @@ export class PostsList extends React.Component<Props & DispatchProps> {
         </TopBar>
 
         <Sidebar.Pusher>
-          <Grid columns={1} stretched stackable style={style.posts}>
+          <Grid columns={1} stretched stackable style={postsStyle}>
             <Grid.Row>
               <Grid.Column stretched>
                 <Segment basic style={style.topSegment}>

@@ -52,7 +52,7 @@ export class LongPost extends React.Component<Props> {
   render() {
     return (
       <Item key={this.props.post.id}>
-        <Item.Content>
+        <Item.Content style={{ width: "100%" }}>
           <Item.Header as="a">{this.props.post.title}</Item.Header>
           {this.props.post.infobar && (
             <Item.Meta>
@@ -80,7 +80,10 @@ export class LongPost extends React.Component<Props> {
           )}
           <Item.Description>
             <div>
-              <div dangerouslySetInnerHTML={{ __html: this.props.post.body }} />
+              <div
+                style={{ textAlign: "justify" }}
+                dangerouslySetInnerHTML={{ __html: this.props.post.body }}
+              />
               <DisqusComments id={this.props.post.id} />
             </div>
           </Item.Description>

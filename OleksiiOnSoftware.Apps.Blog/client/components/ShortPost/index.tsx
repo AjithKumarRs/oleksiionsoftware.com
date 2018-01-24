@@ -74,7 +74,10 @@ export class ShortPost extends React.Component<Props> {
             <PostComments url={this.props.post.id} />
           </Item.Meta>
           <Item.Description>
-            <div dangerouslySetInnerHTML={{ __html: this.props.post.short }} />
+            <div
+              style={{ textAlign: "justify" }}
+              dangerouslySetInnerHTML={{ __html: this.props.post.short }}
+            />
           </Item.Description>
           <Item.Extra>
             <a onClick={() => this.handleHeaderClick(this.props.post)}>

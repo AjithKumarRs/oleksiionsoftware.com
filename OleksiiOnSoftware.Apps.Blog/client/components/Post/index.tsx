@@ -70,6 +70,11 @@ export class PostComponent extends React.Component<Props & DispatchProps> {
       </div>
     );
 
+    const postsStyle = { marginTop: "40px", marginRight: "10px" };
+    if (this.props.isSidebarOpen) {
+      postsStyle.marginRight = "150px";
+    }
+
     return (
       <div className={"main-content"}>
         <Sidebar
@@ -99,7 +104,7 @@ export class PostComponent extends React.Component<Props & DispatchProps> {
         </TopBar>
 
         <Sidebar.Pusher>
-          <Grid columns={1} stretched stackable style={{ marginTop: "40px" }}>
+          <Grid columns={1} stretched stackable style={postsStyle}>
             <Grid.Row>
               <Grid.Column stretched>
                 <Segment basic>
