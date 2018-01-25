@@ -6,23 +6,28 @@ services:
       - API_PUBLIC_HOSTNAME=http://localhost
       - API_INTERNAL_HOSTNAME=http://api:5001
     volumes:
-      - "/c/Projects/oleksiionsoftware.com:/app"
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
     ports:
       - "9229:9229"
   command_handler:
     volumes:
-      - "/c/Projects/oleksiionsoftware.com:/app"
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
       - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
   event_handler:
     volumes:
-      - "/c/Projects/oleksiionsoftware.com:/app"
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
       - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
   api:
     volumes:
-      - "/c/Projects/oleksiionsoftware.com:/app"
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
       - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
   startup:
     entrypoint: "tail -f /dev/null"
     volumes:
-      - "/c/Projects/oleksiionsoftware.com:/app" 
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app" 
       - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
+  tools:
+    entrypoint: "tail -f /dev/null"
+    volumes:
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
+      - "/c/Users/oleksii.udovychenko/.ssh:/root/.ssh" # Mount local .ssh keys into container

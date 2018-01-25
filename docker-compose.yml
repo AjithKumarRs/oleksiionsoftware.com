@@ -2,35 +2,68 @@ version: '3'
 services:
   nginx:
     container_name: nginx
+    image: oleksiionsoftware/nginx:latest
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile
+    labels:
+      - "com.oleksiionsoftware.description: Reverse Proxy"
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
   redis:
     container_name: redis
     image: "redis:alpine"
+    labels:
+      - "com.oleksiionsoftware.description: Non-persistent data store"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
   command_handler:
     container_name: command_handler
+    image: oleksiionsoftware/command_handler:latest
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Services.Blog.CommandHandler/Dockerfile
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
   event_handler:
     container_name: event_handler
+    image: oleksiionsoftware/event_handler:latest
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Services.Blog.EventHandler/Dockerfile
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
   api:
     container_name: api
+    image: oleksiionsoftware/api:latest
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Services.Blog.Api/Dockerfile
     ports:
       - "5001:5001"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
   web:
     container_name: web
+    image: oleksiionsoftware/web:latest
     build: 
       context: .
       dockerfile: ./OleksiiOnSoftware.Apps.Blog/Dockerfile
@@ -42,8 +75,37 @@ services:
       - API_INTERNAL_HOSTNAME=http://api:5001
     ports:
       - "3000:3000"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
   startup:
     container_name: startup
+    image: oleksiionsoftware/startup:latest
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Services.Blog.Import/Dockerfile
+    restart: "no"
+    entrypoint: "bash -c 'cd /app/OleksiiOnSoftware.Services.Blog.Import/out && dotnet OleksiiOnSoftware.Services.Blog.Import.dll'" # Force data import on start
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: none
+  tools:
+    container_name: tools
+    image: oleksiionsoftware/tools:latest
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Tools.Common/Dockerfile
+    restart: "no"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: none

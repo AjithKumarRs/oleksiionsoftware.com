@@ -1,0 +1,27 @@
+apiVersion: vlabs
+
+properties:
+  orchestratorProfile:
+    orchestratorType: SwarmMode
+
+  masterProfile:
+    count: 1
+    dnsPrefix: oleksiionsoftware-master
+    vmSize: Standard_A2
+
+  agentPoolProfiles:
+    -
+      name: agent
+      count: 1
+      vmSize: Standard_A2
+      dnsPrefix: oleksiionsoftware-agent
+      ports:
+        - 80
+        - 443
+        - 8080
+
+  linuxProfile:
+    adminUsername: uda
+    ssh:
+      publicKeys:
+        - keyData: "${OLEKSIIONSOFTWARE_SSH_KEY}"
