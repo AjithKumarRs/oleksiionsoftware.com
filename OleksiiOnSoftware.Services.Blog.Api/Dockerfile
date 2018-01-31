@@ -1,9 +1,7 @@
-FROM microsoft/aspnetcore-build:2.0
-WORKDIR /app
+ARG version=latest
 
-COPY . ./
-RUN dotnet restore && dotnet publish -c Release -o out
-RUN apt-get update && apt-get -y install supervisor
+FROM oleksiionsoftware/base:${version}
+WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://*:5001
 

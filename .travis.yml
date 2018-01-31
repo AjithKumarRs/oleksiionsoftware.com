@@ -1,0 +1,21 @@
+language: generic
+
+sudo: required
+
+env:
+  DOCKER_COMPOSE_VERSION: 1.18.0
+  OLEKSIIONSOFTWARE_VERSION: ${TRAVIS_JOB_NUMBER}
+
+install:
+  - sudo apt-get -qq -y update
+  - sudo apt-get -qq -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - docker-compose --version
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+script:
+  - source .bashrc
+  - hey proj build
+  - hey proj push

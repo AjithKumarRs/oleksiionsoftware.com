@@ -26,8 +26,8 @@ services:
     volumes:
       - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app" 
       - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
-  tools:
-    entrypoint: "tail -f /dev/null"
-    volumes:
-      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
-      - "/c/Users/oleksii.udovychenko/.ssh:/root/.ssh" # Mount local .ssh keys into container
+  # tools:
+  #   entrypoint: "tail -f /dev/null"
+  #   volumes:
+  #     - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
+  #     - "/c/Users/oleksii.udovychenko/.ssh:/root/.ssh" # Mount local .ssh keys into container

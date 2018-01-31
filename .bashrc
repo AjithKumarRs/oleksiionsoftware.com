@@ -5,7 +5,7 @@ if grep -q Microsoft /proc/version; then
 fi
 
 # Initialize required tools
-hey_proj_init_tools() {
+hey_proj_init_tools () {
   apt-get install jq 
 }
 
@@ -21,7 +21,7 @@ hey_proj_init_folders() {
 # Initialization wizard for host machine
 hey_proj_init_env() {
   # Define number of steps in the wizard
-  STEPS=5
+  STEPS=6
 
   # Unset environment variebles
   unset OLEKSIIONSOFTWARE_SOLUTION_PATH
@@ -30,6 +30,8 @@ hey_proj_init_env() {
   unset OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_NAME
   unset OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_PASSWORD
   unset OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_TENANT
+  unset OLEKSIIONSOFTWARE_DOCKER_LOGIN
+  unset OLEKSIIONSOFTWARE_DOCKER_PASSWORD
 
   # Define solution path 
   echo "Step 1/$STEPS: Setting up solution path environment variable..."
@@ -93,6 +95,7 @@ hey_proj_init_env() {
 
   echo " "
   echo "Creating service principal..."
+  DELETE_SERVICE_PRINCIPAL=$(az ad sp delete --id http://$OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_NAME)
   SERVICE_PRINCIPAL=$(az ad sp create-for-rbac --name $OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_NAME --password $OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_PASSWORD)  
   OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_NAME=$(echo $SERVICE_PRINCIPAL | jq -r .name)
   OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_TENANT=$(echo $SERVICE_PRINCIPAL | jq -r .tenant)
@@ -124,6 +127,26 @@ hey_proj_init_env() {
   echo "   Now you will be logged out from Azure."
   az logout
 
+  # Setup docker hub credentials
+  echo ""
+  echo "Step 6/$STEPS: Setting up docker hub credentials..."
+  while [ -z "$OLEKSIIONSOFTWARE_DOCKER_LOGIN" ]; do
+    echo -n "   Enter Docker Hub Login: "
+    read OLEKSIIONSOFTWARE_DOCKER_LOGIN
+  done
+  
+  while [ -z "$OLEKSIIONSOFTWARE_DOCKER_PASSWORD" ]; do
+    echo -n "   Enter Docker Hub Password: "
+    read OLEKSIIONSOFTWARE_DOCKER_PASSWORD
+  done
+
+  echo "   Docker Hub credentials are set to: " 
+  echo "      Docker Hub Login: $OLEKSIIONSOFTWARE_DOCKER_LOGIN"
+  echo "      Docker Hub Password: $OLEKSIIONSOFTWARE_DOCKER_PASSWORD"
+
+  sed -i '/OLEKSIIONSOFTWARE_DOCKER_LOGIN/d' ~/.profile && echo "export OLEKSIIONSOFTWARE_DOCKER_LOGIN=$OLEKSIIONSOFTWARE_DOCKER_LOGIN" >> ~/.profile
+  sed -i '/OLEKSIIONSOFTWARE_DOCKER_PASSWORD/d' ~/.profile && echo "export OLEKSIIONSOFTWARE_DOCKER_PASSWORD=$OLEKSIIONSOFTWARE_DOCKER_PASSWORD" >> ~/.profile
+
   # Source profile to update environment variables in the current session
   source ~/.profile
 }
@@ -140,6 +163,29 @@ hey_proj_print_env() {
   echo "      Service Principal Name: $OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_NAME"
   echo "      Service Principal Password: $OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_PASSWORD"
   echo "      Service Principal Tenant: $OLEKSIIONSOFTWARE_AZURE_SERVICE_PRINCIPAL_TENANT"
+  echo " "
+  echo "   Docker Hub credentials are set to: " 
+  echo "      Docker Hub Login: $OLEKSIIONSOFTWARE_DOCKER_LOGIN"
+  echo "      Docker Hub Password: $OLEKSIIONSOFTWARE_DOCKER_PASSWORD"
+}
+
+hey_proj_build() {
+  # Login to docker hub
+  docker login -u "$OLEKSIIONSOFTWARE_DOCKER_LOGIN" -p "$OLEKSIIONSOFTWARE_DOCKER_PASSWORD"
+
+  # Build base image
+  docker build . --tag oleksiionsoftware/base:${OLEKSIIONSOFTWARE_VERSION:-latest}
+  
+  # Build production 
+  docker-compose -f docker-compose.yml build
+}
+
+hey_proj_push() {
+  # Push base image to docker hub
+  docker push oleksiionsoftware/base:${OLEKSIIONSOFTWARE_VERSION:-latest}
+
+  # Push all other images to docker hub
+  docker-compose -f docker-compose.yml push
 }
 
 hey_connect_tools() {

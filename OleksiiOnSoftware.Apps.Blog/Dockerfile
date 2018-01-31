@@ -1,7 +1,7 @@
 FROM node
 WORKDIR /app
 
-RUN apt-get update && apt-get -y install supervisor
+RUN apt-get -qq -y update && apt-get -qq -y install supervisor
 
 COPY . ./
 
@@ -9,8 +9,9 @@ ENV NODE_ENV=production
 ENV API_PUBLIC_HOSTNAME=http://oleksiionsoftware.com
 ENV API_INTERNAL_HOSTNAME=http://api:5001
 
-RUN cd /app/OleksiiOnSoftware.Apps.Blog/ && npm install --only=dev
-RUN cd /app/OleksiiOnSoftware.Apps.Blog/ && npm run build
+WORKDIR /app/OleksiiOnSoftware.Apps.Blog
+RUN npm install --only=dev --quiet
+RUN npm run build
 
 EXPOSE 80 3000 9229
 ENTRYPOINT ["/usr/bin/supervisord", "-c", "/app/OleksiiOnSoftware.Apps.Blog/supervisord.conf"]
