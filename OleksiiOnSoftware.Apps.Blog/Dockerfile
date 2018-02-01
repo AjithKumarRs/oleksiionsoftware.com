@@ -6,7 +6,7 @@ RUN apt-get -qq -y update && apt-get -qq -y install supervisor
 COPY . ./
 
 ENV NODE_ENV=production
-ENV API_PUBLIC_HOSTNAME=http://oleksiionsoftware.com
+ENV API_PUBLIC_HOSTNAME=https://oleksiionsoftware.com
 ENV API_INTERNAL_HOSTNAME=http://api:5001
 
 WORKDIR /app/OleksiiOnSoftware.Apps.Blog

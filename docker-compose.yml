@@ -6,8 +6,9 @@ services:
     build:
       context: .
       dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile
-      args:
-        version: ${OLEKSIIONSOFTWARE_VERSION:-latest}
+    volumes:
+      - certs:/etc/letsencrypt
+      - certs-data:/data/letsencrypt
     labels:
       - "com.oleksiionsoftware.description: Reverse Proxy"
     ports:
@@ -62,8 +63,8 @@ services:
       dockerfile: ./OleksiiOnSoftware.Services.Blog.Api/Dockerfile
       args:
         version: ${OLEKSIIONSOFTWARE_VERSION:-latest}
-    ports:
-      - "5001:5001"
+    expose:
+      - 5001
     deploy:
       replicas: 1
       placement:
@@ -79,10 +80,10 @@ services:
       - NODE_ENV=production
       - NODE_PORT=3000
       - NODE_HOSTNAME=0.0.0.0
-      - API_PUBLIC_HOSTNAME=http://oleksiionsoftware.com
+      - API_PUBLIC_HOSTNAME=https://oleksiionsoftware.com
       - API_INTERNAL_HOSTNAME=http://api:5001
-    ports:
-      - "3000:3000"
+    expose:
+      - 3000
     deploy:
       replicas: 1
       placement:
@@ -119,3 +120,6 @@ services:
   #         - node.role == worker
   #     restart_policy:
   #       condition: none
+volumes: 
+  certs:
+  certs-data:
