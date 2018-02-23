@@ -15,7 +15,7 @@
           "-c",
           "export DOCKER_HOST='tcp://0.0.0.0:2375' && docker exec -i api ${debuggerCommand}"
         ],
-        "debuggerPath": "/root/vsdbg/vsdbg",
+        "debuggerPath": "/vsdbg/vsdbg",
         "pipeCwd": "${workspaceRoot}",
         "quoteArgs": true
       },
@@ -31,18 +31,17 @@
       "request": "launch",
       "justMyCode": true,
       "cwd": "/app",
-      "program":
-        "/app/OleksiiOnSoftware.Services.Blog.Import/out/OleksiiOnSoftware.Services.Blog.Import.dll",
+      "program": "/app/OleksiiOnSoftware.Services.Blog.Import/out/OleksiiOnSoftware.Services.Blog.Import.dll",
       "sourceFileMap": {
         "/app": "${workspaceRoot}"
       },
       "pipeTransport": {
-        "debuggerPath": "/root/vsdbg/vsdbg",
+        "debuggerPath": "/vsdbg/vsdbg",
         "pipeProgram": "C:\\windows\\system32\\bash.exe",
         "pipeCwd": "${workspaceRoot}",
         "pipeArgs": [
           "-c",
-          "export DOCKER_HOST='tcp://0.0.0.0:2375' && docker exec -i startup /root/vsdbg/vsdbg --interpreter=vscode"
+          "export DOCKER_HOST='tcp://0.0.0.0:2375' && docker exec -i import /vsdbg/vsdbg --interpreter=vscode"
         ]
       }
     }

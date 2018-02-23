@@ -1,11 +1,36 @@
 version: '3'
 services:
+  base: 
+    container_name: base
+    image: oleksiionsoftware/base:${OLEKSIIONSOFTWARE_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Config.Base/Dockerfile
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+  tools:
+    container_name: tools
+    image: oleksiionsoftware/tools:${OLEKSIIONSOFTWARE_VERSION:-latest}
+    entrypoint: "tail -f /dev/null"
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Config.Tools/Dockerfile
+    volumes:
+      - "tools:/app" 
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
   nginx:
     container_name: nginx
     image: oleksiionsoftware/nginx:${OLEKSIIONSOFTWARE_VERSION:-latest}
     build:
       context: .
-      dockerfile: ./OleksiiOnSoftware.Config.Nginx/Dockerfile
+      dockerfile: ./OleksiiOnSoftware.Services.Nginx/Dockerfile
     volumes:
       - certs:/etc/letsencrypt
       - certs-data:/data/letsencrypt
@@ -14,6 +39,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - api
+      - web
     deploy:
       replicas: 1
       placement:
@@ -24,6 +52,8 @@ services:
     image: "redis:alpine"
     labels:
       - "com.oleksiionsoftware.description: Non-persistent data store"
+    expose:
+     - 6379
     deploy:
       replicas: 1
       placement:
@@ -37,6 +67,8 @@ services:
       dockerfile: ./OleksiiOnSoftware.Services.Blog.CommandHandler/Dockerfile
       args:
         version: ${OLEKSIIONSOFTWARE_VERSION:-latest}
+    depends_on:
+      - base
     deploy:
       replicas: 1
       placement:
@@ -50,6 +82,8 @@ services:
       dockerfile: ./OleksiiOnSoftware.Services.Blog.EventHandler/Dockerfile
       args:
         version: ${OLEKSIIONSOFTWARE_VERSION:-latest}
+    depends_on:
+      - base
     deploy:
       replicas: 1
       placement:
@@ -65,6 +99,29 @@ services:
         version: ${OLEKSIIONSOFTWARE_VERSION:-latest}
     expose:
       - 5001
+    depends_on:
+      - base
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+  import:
+    container_name: import
+    image: oleksiionsoftware/import:${OLEKSIIONSOFTWARE_VERSION:-latest}
+    entrypoint: wait-for-it -t 0 api:5001 -s --
+    command: dotnet OleksiiOnSoftware.Services.Blog.Import.dll
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    build:
+      context: .
+      dockerfile: ./OleksiiOnSoftware.Services.Blog.Import/Dockerfile
+      args:
+        version: ${OLEKSIIONSOFTWARE_VERSION:-latest}
+    volumes:
+      - "tools:/tools"
+    depends_on:
+      - base
     deploy:
       replicas: 1
       placement:
@@ -75,7 +132,7 @@ services:
     image: oleksiionsoftware/web:${OLEKSIIONSOFTWARE_VERSION:-latest}
     build: 
       context: .
-      dockerfile: ./OleksiiOnSoftware.Apps.Blog/Dockerfile
+      dockerfile: ./OleksiiOnSoftware.Services.Blog/Dockerfile
     environment: 
       - NODE_ENV=production
       - NODE_PORT=3000
@@ -89,37 +146,7 @@ services:
       placement:
         constraints:
           - node.role == worker
-  startup:
-    container_name: startup
-    image: oleksiionsoftware/startup:${OLEKSIIONSOFTWARE_VERSION:-latest}
-    build:
-      context: .
-      dockerfile: ./OleksiiOnSoftware.Services.Blog.Import/Dockerfile
-      args:
-        version: ${OLEKSIIONSOFTWARE_VERSION:-latest}
-    restart: "no"
-    entrypoint: "bash -c 'cd /app/OleksiiOnSoftware.Services.Blog.Import/out && dotnet OleksiiOnSoftware.Services.Blog.Import.dll'" # Force data import on start
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-      restart_policy:
-        condition: none
-  # tools:
-  #   container_name: tools
-  #   image: oleksiionsoftware/tools:latest
-  #   build:
-  #     context: .
-  #     dockerfile: ./OleksiiOnSoftware.Tools.Common/Dockerfile
-  #   restart: "no"
-  #   deploy:
-  #     replicas: 1
-  #     placement:
-  #       constraints:
-  #         - node.role == worker
-  #     restart_policy:
-  #       condition: none
 volumes: 
+  tools:
   certs:
   certs-data:

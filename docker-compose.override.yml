@@ -1,9 +1,16 @@
 version: '3'
 services:
+  base:
+    entrypoint: "tail -f /dev/null"
+  tools:
+    entrypoint: "tail -f /dev/null"
   nginx:
     volumes:
-      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}/OleksiiOnSoftware.Config.Nginx:/etc/nginx/conf.d:ro"
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}/OleksiiOnSoftware.Services.Nginx:/etc/nginx/conf.d:ro"
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}/OleksiiOnSoftware.Services.Nginx/letsencrypt:/etc/letsencrypt"
   web:
+    working_dir: /app/OleksiiOnSoftware.Services.Blog
+    entrypoint: npm start
     environment:
       - NODE_ENV=development
       - API_PUBLIC_HOSTNAME=http://localhost
@@ -13,24 +20,29 @@ services:
     ports:
       - "9229:9229"
   command_handler:
+    working_dir: /app/OleksiiOnSoftware.Services.Blog.CommandHandler/out
+    entrypoint: dotnet OleksiiOnSoftware.Services.Blog.CommandHandler.dll
     volumes:
       - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
-      - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
+      - "${OLEKSIIONSOFTWARE_PACKAGES_PATH}:/root/.nuget/packages:ro"
   event_handler:
+    working_dir: /app/OleksiiOnSoftware.Services.Blog.EventHandler/out
+    entrypoint: dotnet OleksiiOnSoftware.Services.Blog.EventHandler.dll
     volumes:
       - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
-      - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
+      - "${OLEKSIIONSOFTWARE_PACKAGES_PATH}:/root/.nuget/packages:ro"
   api:
+    working_dir: /app/OleksiiOnSoftware.Services.Blog.Api/out
+    entrypoint: dotnet OleksiiOnSoftware.Services.Blog.Api.dll
     volumes:
       - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
-      - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
-  startup:
+      - "${OLEKSIIONSOFTWARE_PACKAGES_PATH}:/root/.nuget/packages"
+  import:
+    working_dir: /app/OleksiiOnSoftware.Services.Blog.Import/out
     entrypoint: "tail -f /dev/null"
     volumes:
-      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app" 
-      - "/c/Users/oleksii.udovychenko/.nuget/packages:/root/.nuget/packages:ro"
-  # tools:
-  #   entrypoint: "tail -f /dev/null"
-  #   volumes:
-  #     - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
-  #     - "/c/Users/oleksii.udovychenko/.ssh:/root/.ssh" # Mount local .ssh keys into container
+      - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
+      - "${OLEKSIIONSOFTWARE_CONTENT_PATH}:/data:ro"
+      - "${OLEKSIIONSOFTWARE_PACKAGES_PATH}:/root/.nuget/packages:ro"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

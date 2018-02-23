@@ -10,8 +10,7 @@ properties:
     vmSize: Standard_A2
 
   agentPoolProfiles:
-    -
-      name: agent
+    - name: agent
       count: 1
       vmSize: Standard_A2
       dnsPrefix: oleksiionsoftware-agent

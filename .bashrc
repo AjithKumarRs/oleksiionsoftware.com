@@ -6,7 +6,7 @@ fi
 
 # Initialize required tools
 hey_proj_init_tools () {
-  apt-get install jq 
+  apt-get install jq
 }
 
 # Initialize solution under WSL on Windows 10
@@ -173,19 +173,11 @@ hey_proj_build() {
   # Login to docker hub
   docker login -u "$OLEKSIIONSOFTWARE_DOCKER_LOGIN" -p "$OLEKSIIONSOFTWARE_DOCKER_PASSWORD"
 
-  # Build base image
-  docker build . --tag oleksiionsoftware/base:${OLEKSIIONSOFTWARE_VERSION:-latest}
-  
+  # Build base dev image
+  docker build . --tag oleksiionsoftware/base:latest
+
   # Build production 
   docker-compose -f docker-compose.yml build
-}
-
-hey_proj_push() {
-  # Push base image to docker hub
-  docker push oleksiionsoftware/base:${OLEKSIIONSOFTWARE_VERSION:-latest}
-
-  # Push all other images to docker hub
-  docker-compose -f docker-compose.yml push
 }
 
 hey_connect_tools() {

@@ -7,6 +7,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System;
 
     public class GitHubContentSource : IContentSource
     {
@@ -33,31 +34,40 @@
 
         public string Repo { get; set; } = "boades-blog-content";
 
+        public string Folder { get; set; } = "/data";
+
         public string Branch { get; set; } = "master";
 
         public Blog GetContent()
         {
-            if (!Directory.Exists(Repo))
-            {
-                Clone();
+            // Production - Clone the repo from github
+            // Development - The directory with the latest changes expected to be mounted as volume
+            Console.WriteLine("ASPNETCORE_ENVIRONMENT={0}", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {                
+                if (!Directory.GetFiles(Folder).Any())
+                {
+                    Clone(Folder);
+                }
+
+                GetLatestChanges(Folder);
             }
 
-            GetLatestChanges(Repo);
+            var metadataFile = Path.Combine(Folder, ReadmeFile).ToLowerInvariant();
+            var blog = _blogMetadataParser.GetBlogDto(Path.Combine(Folder, ReadmeFile));
 
-            var metadataFile = Path.Combine(Repo, ReadmeFile).ToLowerInvariant();
-            var blog = _blogMetadataParser.GetBlogDto(Path.Combine(Repo, ReadmeFile));
-
-            var postFiles = Directory.GetFiles(Repo, ReadmeFile, SearchOption.AllDirectories)
+            var postFiles = Directory.GetFiles(Folder, ReadmeFile, SearchOption.AllDirectories)
                 .Except(new[] { metadataFile })
                 .ToList();
 
-            _logger.LogInformation($"Discovered ${postFiles.Count()} files.");
+            _logger.LogInformation($"Discovered {postFiles.Count()} files.");
             foreach (var postFile in postFiles)
             {
                 var post = GetPost(postFile);
 
                 var dir = Path.GetDirectoryName(postFile);
-                var repl = Repo;
+                var repl = Folder;
                 post.RelativePath = dir.Replace(repl, string.Empty).Trim(Path.PathSeparator);
 
                 if (string.IsNullOrEmpty(post.Category))
@@ -95,7 +105,7 @@
             return postDto;
         }
 
-        private void Clone()
+        private void Clone(string folder)
         {
             var repoUrl = RepoUrlTemplate
                .Replace("{User}", User)
@@ -103,8 +113,9 @@
 
             var processStartInfo = new ProcessStartInfo
             {
+                WorkingDirectory = folder,
                 FileName = "git",
-                Arguments = $"clone -b {Branch} {repoUrl}",
+                Arguments = $"clone -b {Branch} {repoUrl} .",
                 CreateNoWindow = true,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true

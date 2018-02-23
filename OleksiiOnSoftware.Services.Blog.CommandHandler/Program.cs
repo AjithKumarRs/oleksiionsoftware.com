@@ -9,6 +9,7 @@
     using System;
     using System.IO;
     using StackExchange.Redis;
+    using System.Threading;
 
     public class Program
     {
@@ -49,7 +50,10 @@
             processor.RegisterCommandHandler(typeof(Blog));
             processor.Start();
 
+            Thread.Sleep(Timeout.Infinite);
+            
             Console.ReadLine();
+
             return 0;
         }
     }

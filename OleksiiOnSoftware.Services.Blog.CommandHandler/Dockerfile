@@ -1,5 +1,13 @@
 ARG version=latest
 
-FROM oleksiionsoftware/base:${version}
+# Reference base image with build artifacts
+FROM oleksiionsoftware/base:${version} as build-env
+
+# Use minimal availiable image for runtime
+FROM microsoft/aspnetcore:2.0
+
 WORKDIR /app
-ENTRYPOINT ["/usr/bin/supervisord", "-c", "/app/OleksiiOnSoftware.Services.Blog.CommandHandler/supervisord.conf"]
+
+COPY --from=build-env /app/OleksiiOnSoftware.Services.Blog.CommandHandler/out .
+
+ENTRYPOINT dotnet OleksiiOnSoftware.Services.Blog.CommandHandler.dll

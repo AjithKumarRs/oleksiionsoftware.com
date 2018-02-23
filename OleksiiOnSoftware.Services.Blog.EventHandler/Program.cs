@@ -11,6 +11,7 @@
     using System.Linq;
     using System.Reflection;
     using StackExchange.Redis;
+    using System.Threading;
 
     class Program
     {
@@ -67,6 +68,8 @@
             var processor = serviceProvider.GetService<IEventProcessor>();
             processor.RegisterEventHandler(Assembly.Load(new AssemblyName("OleksiiOnSoftware.Services.Blog.Query")));
             processor.Start();
+
+            Thread.Sleep(Timeout.Infinite);
 
             Console.ReadLine();
             return 0;

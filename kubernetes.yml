@@ -1,0 +1,242 @@
+#
+# Services
+#
+
+# Redis
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis # DNS Label
+  labels:
+    app: com.oleksiionsoftware
+spec:
+  selector:
+    run: com.oleksiionsoftware.pods.redis
+  ports:
+  - port: 6379
+---
+
+# API
+apiVersion: v1
+kind: Service
+metadata:
+  name: api # DNS Label
+  labels:
+    app: com.oleksiionsoftware
+spec:
+  selector:
+    app: com.oleksiionsoftware
+    run: com.oleksiionsoftware.pods.api
+  ports:
+  - port: 5001
+---
+
+# Web
+apiVersion: v1
+kind: Service
+metadata:
+  name: web # DNS Label
+  labels:
+    app: com.oleksiionsoftware
+spec:
+  selector:
+    run: com.oleksiionsoftware.pods.web
+  ports:
+  - port: 3000
+---
+
+# Nginx
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: com.oleksiionsoftware
+spec:
+  selector:
+    run: com.oleksiionsoftware.pods.nginx
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    nodePort: 30001
+---
+
+#
+# PODS
+#
+
+# Redis
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: com.oleksiionsoftware.depl.redis
+  labels:
+    app: com.oleksiionsoftware
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: com.oleksiionsoftware
+        run: com.oleksiionsoftware.pods.redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+        ports:
+        - containerPort: 6379
+---
+
+# Command Handler
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: com.oleksiionsoftware.depl.commandhandler
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: com.oleksiionsoftware
+    spec:
+      containers:
+      - name: commandhandler
+        image: oleksiionsoftware/command_handler:22.1        
+        imagePullPolicy: IfNotPresent
+---
+
+# Event Handler
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: com.oleksiionsoftware.depl.eventhandler
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: com.oleksiionsoftware
+    spec:
+      containers:
+      - name: eventhandler
+        image: oleksiionsoftware/event_handler:22.1        
+        imagePullPolicy: IfNotPresent
+---
+
+# API
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: com.oleksiionsoftware.depl.api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: com.oleksiionsoftware
+        run: com.oleksiionsoftware.pods.api
+    spec:
+      containers:
+      - name: api
+        image: oleksiionsoftware/api:22.1        
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5001
+---
+
+# Web
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: com.oleksiionsoftware.depl.web
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: com.oleksiionsoftware
+        run: com.oleksiionsoftware.pods.web
+    spec:
+      volumes:
+      - name: source-code
+        hostPath:
+          path: '/c/Projects/oleksiionsoftware.com'
+      containers:
+      - name: web
+        image: oleksiionsoftware/web:22.1
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash"]
+        args: ["-c", "cd /app/OleksiiOnSoftware.Apps.Blog && npm start"]
+        env:
+        - name: NODE_ENV
+          value: "development"
+        - name: NODE_PORT
+          value: "3000"
+        - name: NODE_HOSTNAME
+          value: "0.0.0.0"
+        - name: API_PUBLIC_HOSTNAME
+          value: "http://localhost:30001"
+        - name: API_INTERNAL_HOSTNAME
+          value: http://api:5001
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - mountPath: '/app'
+          name: source-code
+---
+
+# NGINX
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: com.oleksiionsoftware.depl.nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: com.oleksiionsoftware.pods.nginx
+    spec:
+      volumes:
+      - name: config
+        hostPath:
+          path: '/c/Projects/oleksiionsoftware.com/OleksiiOnSoftware.Config.Nginx'
+      - name: certs
+        hostPath:
+          path: '/c/Projects/oleksiionsoftware.com/OleksiiOnSoftware.Config.Nginx/letsencrypt'
+      containers:
+      - name: nginx
+        image: oleksiionsoftware/nginx:22.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 443
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: '/etc/nginx/conf.d'
+          name: config
+        - mountPath: '/etc/letsencrypt'
+          name: certs
+---
+
+#
+# Jobs
+#
+
+# Load data
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: com.oleksiionsoftware.batch.startup
+spec:
+  template:
+    spec:
+      containers:
+      - name: startup
+        image: oleksiionsoftware/startup:22.1
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "cd /app/OleksiiOnSoftware.Services.Blog.Import/out && dotnet OleksiiOnSoftware.Services.Blog.Import.dll"]
+      restartPolicy: Never
+  backoffLimit: 4
