@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { renderToString } from "react-dom/server";
 import { matchPath } from "react-router-dom";
 import { ConnectedRouter } from "react-router-redux";
+import { ServerStyleSheet, StyleSheetManager } from "styled-components";
 import createMemoryHistory from "history/createMemoryHistory";
 
 // App
@@ -15,7 +16,7 @@ import { App, NotFound } from "components";
 import configureStore from "store";
 import routes from "./routes";
 
-module.exports = async function (req: Request, res: Response) {
+module.exports = async function(req: Request, res: Response) {
   // Find suitable route for the request
   let match, component;
   const isMatched = routes.some(r => {
@@ -88,14 +89,20 @@ module.exports = async function (req: Request, res: Response) {
   }
 
   // Render component on the server side into string.
-  // If no data have been loaded to the Redux store, then render component empty and let Redux load data on the client-side
+  // If no data have been loaded to the Redux store, then leave render component empty and let Redux load data on the client-side
+  const sheet = new ServerStyleSheet() as any;
   const rendered = renderToString(
-    <Provider store={store}>
-      <ConnectedRouter store={store} history={history}>
-        <App routes={routes} />
-      </ConnectedRouter>
-    </Provider>
-  ); 
+    <StyleSheetManager sheet={sheet.instance}>
+      <Provider store={store}>
+        <ConnectedRouter store={store} history={history}>
+          <App routes={routes} />
+        </ConnectedRouter>
+      </Provider>
+    </StyleSheetManager>
+  );
+
+  const styleTags = (sheet as ServerStyleSheet).getStyleTags();
+  console.log(styleTags);
 
   // Return a complete page with rendered component and redux store state
   res.send(`
@@ -105,6 +112,8 @@ module.exports = async function (req: Request, res: Response) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>oleksiionsoftware.com</title>
         
+        ${styleTags}
+
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/themes/prism-okaidia.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/plugins/line-numbers/prism-line-numbers.css" />

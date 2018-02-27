@@ -30,7 +30,7 @@
             string filterByCategory = null,
             string filterByTag = null,
             int pageIndex = 0, 
-            int pageSize = 10)
+            int pageSize = 100)
         {
             return await _blogsService.GetHomeViewAsync(id, 
                 filterByDate, 

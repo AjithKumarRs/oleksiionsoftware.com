@@ -9,17 +9,15 @@ interface Props {
   url: string;
 }
 
-// TODO: Refactor URL
+// Components
 export class PostComments extends React.Component<Props> {
   render() {
+    const url =
+      "http://oleksiionsoftware.com/post/" + this.props.url + "#disqus_thread";
+
     return (
       <Label>
-        <Icon name="comments" />{" "}
-        <a
-          href={`http://oleksiionsoftware.com/post/${
-            this.props.url
-          }#disqus_thread`}
-        />
+        <Icon name="comments" /> <a href={url}>0 Comments</a>
       </Label>
     );
   }

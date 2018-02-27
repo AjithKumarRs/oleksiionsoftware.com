@@ -25,7 +25,7 @@ export class PostTag extends React.Component<Props> {
   render() {
     return (
       <Label as="a" onClick={this.handleClick}>
-        <Icon name="tag" /> &nbsp; {this.props.tag.title}
+        <Icon name="tag" /> {this.props.tag.title}
       </Label>
     );
   }

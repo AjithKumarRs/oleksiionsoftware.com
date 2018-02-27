@@ -26,7 +26,7 @@ export class PostCategory extends React.Component<Props> {
   render() {
     return (
       <Label as="a" onClick={this.handleClick}>
-        <Icon name="folder" /> &nbsp; {this.props.category.title}
+        <Icon name="folder" /> {this.props.category.title}
       </Label>
     );
   }

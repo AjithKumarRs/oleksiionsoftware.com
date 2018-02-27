@@ -32,6 +32,9 @@
       "store": [
         "./client/store/index.ts"
       ],
+      "theme": [
+        "./client/theme/index.ts"
+      ],
       "types": [
         "./client/types/index.ts"
       ],

@@ -7,6 +7,7 @@ import { Route, Switch, RouteProps } from "react-router";
 // Custom UI
 import { ScrollToTop, GoogleAnalyticsTrackPageView } from "components";
 
+// Types
 interface Props {
   routes: RouteProps[];
 }

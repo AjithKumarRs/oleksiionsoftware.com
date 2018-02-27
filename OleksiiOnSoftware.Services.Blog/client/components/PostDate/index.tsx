@@ -24,7 +24,7 @@ export class PostDate extends React.Component<Props> {
   render() {
     return (
       <Label as="a" onClick={this.handleClick}>
-        <Icon name="calendar" /> &nbsp; {this.props.date}
+        <Icon name="calendar" /> {this.props.date}
       </Label>
     );
   }

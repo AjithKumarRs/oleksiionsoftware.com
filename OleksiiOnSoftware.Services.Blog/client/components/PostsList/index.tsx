@@ -1,5 +1,6 @@
 // React
 import * as React from "react";
+import styled from "theme";
 import { connect, Store } from "react-redux";
 import { match } from "react-router";
 import { init } from "decorators";
@@ -8,21 +9,19 @@ import { init } from "decorators";
 import {
   TopBar,
   Header,
-  ShortPost,
-  Pagination,
-  LeftNavigation,
+  TopMenu,
+  PostItem,
   DisqusResetCommentsCount
 } from "components";
 
 // Actions
 import {
   push,
-  toggleSidebar,
   homeInitAsync,
-  homeFilterByCategoryAsync,
+  homeChangePageAsync,
   homeFilterByTagAsync,
   homeFilterByDateAsync,
-  homeChangePageAsync
+  homeFilterByCategoryAsync
 } from "actions";
 
 // Types
@@ -31,31 +30,11 @@ import { RootState } from "types";
 // Semantic UI
 import { Grid, Segment, Item, Sidebar, Menu } from "semantic-ui-react";
 
-// Styles
-const style = {
-  appBar: {
-    width: "100%"
-  },
-
-  mainContent: {
-    height: "100%"
-  },
-
-  topSegment: {
-    margin: 0,
-    padding: 0
-  },
-
-  posts: {
-    marginTop: "40px"
-  }
-};
-
 // Types
 import { Post, Link, Category, Tag, Filter } from "types";
 
 interface Props {
-  isSidebarOpen: boolean;
+  className?: string;
   brand: string;
   links: Link[];
   filter: Filter;
@@ -66,7 +45,6 @@ interface Props {
 }
 
 interface DispatchProps {
-  toggleSidebar: () => void;
   filterReset: () => void;
   filterByDate: (date: string) => void;
   filterByCategory: (category: Category) => void;
@@ -77,8 +55,6 @@ interface DispatchProps {
 }
 
 export class PostsList extends React.Component<Props & DispatchProps> {
-  handleSidebarToggle = () => this.props.toggleSidebar();
-
   handleFilterReset = () => this.props.filterReset();
 
   handleFilterByDate = (date: string) => this.props.filterByDate(date);
@@ -96,86 +72,46 @@ export class PostsList extends React.Component<Props & DispatchProps> {
     this.props.changePage(pageIndex, pageSize);
 
   render() {
-    const postsStyle = { ...style.posts, marginRight: "10px" };
-    if (this.props.isSidebarOpen) {
-      postsStyle.marginRight = "150px";
-    }
-
     return (
-      <div className={"main-content"} style={style.mainContent}>
-        <Sidebar
-          as={Menu}
-          width="thin"
-          visible={this.props.isSidebarOpen}
-          icon="labeled"
-          vertical
-          inverted
-        >
-          <LeftNavigation
-            brand={this.props.brand}
-            links={this.props.links}
-            onLinkClick={this.handleLinkClick}
-          />
-        </Sidebar>
+      <div className={this.props.className}>
+        <TopBar
+          brand={this.props.brand}
+          links={this.props.links}
+          onLinkClick={this.handleLinkClick}
+        />
 
-        <TopBar onToggle={this.handleSidebarToggle}>
-          <Menu.Item className={"borderless"}>
-            <Header
-              filter={this.props.filter}
-              onHomeClick={this.handleFilterReset}
-            />
-          </Menu.Item>
-        </TopBar>
-
-        <Sidebar.Pusher>
-          <Grid columns={1} stretched stackable style={postsStyle}>
-            <Grid.Row>
-              <Grid.Column stretched>
-                <Segment basic style={style.topSegment}>
-                  <Item.Group>
-                    <div className={"top-header"}>
-                      {this.props.pagesCount > 1 && (
-                        <Pagination
-                          pageIndex={this.props.pageIndex}
-                          pageSize={this.props.pageSize}
-                          pagesCount={this.props.pagesCount}
-                          onPageChanged={this.handlePageChange}
-                        />
-                      )}
-                    </div>
-                  </Item.Group>
-                </Segment>
-
-                <Segment basic>
-                  <Item.Group>
-                    {this.props.posts &&
-                      this.props.posts.map(pst => (
-                        <ShortPost
-                          key={pst.id}
-                          post={pst}
-                          onHeaderClick={this.handlePostClick}
-                          onDateClick={this.handleFilterByDate}
-                          onCategoryClick={this.handleFilterByCategory}
-                          onTagClick={this.handleFilterByTag}
-                        />
-                      ))}
-                  </Item.Group>
-                </Segment>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Sidebar.Pusher>
-
+        <div className={"posts"}>
+          {this.props.posts &&
+            this.props.posts.map(pst => (
+              <PostItem
+                key={pst.id}
+                mode={"short"}
+                post={pst}
+                onHeaderClick={this.handlePostClick}
+                onDateClick={this.handleFilterByDate}
+                onCategoryClick={this.handleFilterByCategory}
+                onTagClick={this.handleFilterByTag}
+              />
+            ))}
+        </div>
         <DisqusResetCommentsCount />
       </div>
     );
   }
 }
 
-// Connect PostsList to Redux store
+// Styled Components
+const PostsListStyled = styled(PostsList)`
+  .posts {
+    margin-top: 140px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+`;
+
+// Connected Components
 const HomeConnected = connect(
   (state: RootState): Props => ({
-    isSidebarOpen: state.config.isSidebarOpen,
     brand: state.home.brand,
     filter: state.home.filter,
     links: state.home.links,
@@ -185,7 +121,6 @@ const HomeConnected = connect(
     pageSize: state.home.pageSize
   }),
   (dispatch): DispatchProps => ({
-    toggleSidebar: () => dispatch(toggleSidebar()),
     openPost: postId => dispatch(push(`/post/${postId}`)),
     filterReset: () => dispatch(push("/")),
     filterByDate: date => dispatch(push(`/posts/date/${date}`)),
@@ -196,7 +131,7 @@ const HomeConnected = connect(
     changePage: (pageIndex, pageSize) =>
       dispatch(push(`/page/${pageIndex + 1}`))
   })
-)(PostsList);
+)(PostsListStyled);
 
 // Home default screen
 const Home = init((store: Store<RootState>, match: match<any>) =>

@@ -53,6 +53,7 @@ const config: webpack.Configuration = {
       actions: path.resolve(context, "./client/actions"),
       reducers: path.resolve(context, "./client/reducers"),
       store: path.resolve(context, "./client/store"),
+      theme: path.resolve(context, "./client/theme"),      
       decorators: path.resolve(context, "./client/decorators"),
       routes: path.resolve(context, "./client/routes"),
       utils: path.resolve(context, "./client/utils"),
@@ -67,7 +68,14 @@ const config: webpack.Configuration = {
         exclude: /node_modules/,
         use: [
           { loader: "react-hot-loader" },
-          { loader: "babel-loader" },
+          { 
+            loader: "babel-loader", 
+            options: {
+              plugins:  [
+                ["babel-plugin-styled-components", { "ssr": true }]
+              ]
+            }
+          },
           { loader: "awesome-typescript-loader" }
         ]
       },

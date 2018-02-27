@@ -1,17 +1,10 @@
 import * as chokidar from "chokidar";
-import * as cssModulesRequireHook from "css-modules-require-hook";
 import * as express from "express";
 import * as http from "http";
 import * as webpack from "webpack";
 import * as webpackDevMiddleware from "webpack-dev-middleware";
 import * as webpackHotMiddleware from "webpack-hot-middleware";
 import * as bodyParser from "body-parser";
-
-// Setup css modules naming convention compilation on server side
-cssModulesRequireHook({
-  generateScopedName: "[path][name]-[local]-[hash:base64:5]",
-  extensions: [".css"]
-});
 
 // Setup express to serve static files
 const app = express();
@@ -28,7 +21,7 @@ app.use(bodyParser.json());
 if (process.env.NODE_ENV === "development") {
   const config = require("./config/webpack.development.config").default;
   const compiler = webpack(config);
-
+ 
   // Serve hot-reloading bundle to client
   app.use(
     webpackDevMiddleware(compiler, {
