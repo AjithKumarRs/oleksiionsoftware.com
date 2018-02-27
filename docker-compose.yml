@@ -11,6 +11,8 @@ services:
       placement:
         constraints:
           - node.role == worker
+      restart_policy:
+        condition: none
   tools:
     container_name: tools
     image: oleksiionsoftware/tools:${OLEKSIIONSOFTWARE_VERSION:-latest}
@@ -25,6 +27,8 @@ services:
       placement:
         constraints:
           - node.role == worker
+      restart_policy:
+        condition: none
   nginx:
     container_name: nginx
     image: oleksiionsoftware/nginx:${OLEKSIIONSOFTWARE_VERSION:-latest}
@@ -127,6 +131,8 @@ services:
       placement:
         constraints:
           - node.role == worker
+      restart_policy:
+        condition: none
   web:
     container_name: web
     image: oleksiionsoftware/web:${OLEKSIIONSOFTWARE_VERSION:-latest}

@@ -7,12 +7,12 @@ properties:
   masterProfile:
     count: 1
     dnsPrefix: oleksiionsoftware-master
-    vmSize: Standard_A2
+    vmSize: Standard_A0
 
   agentPoolProfiles:
     - name: agent
       count: 1
-      vmSize: Standard_A2
+      vmSize: Standard_A1
       dnsPrefix: oleksiionsoftware-agent
       ports:
         - 80

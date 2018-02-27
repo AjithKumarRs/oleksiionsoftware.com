@@ -39,7 +39,7 @@ services:
       - "${OLEKSIIONSOFTWARE_PACKAGES_PATH}:/root/.nuget/packages"
   import:
     working_dir: /app/OleksiiOnSoftware.Services.Blog.Import/out
-    entrypoint: "tail -f /dev/null"
+    # entrypoint: "tail -f /dev/null"
     volumes:
       - "${OLEKSIIONSOFTWARE_SOLUTION_PATH}:/app"
       - "${OLEKSIIONSOFTWARE_CONTENT_PATH}:/data:ro"
