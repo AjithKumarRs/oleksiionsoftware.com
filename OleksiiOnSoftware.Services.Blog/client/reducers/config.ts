@@ -2,20 +2,28 @@ import { ConfigState, Action } from "types";
 
 const initialState: ConfigState = {
   hostname: "",
-  isSidebarOpen: true
+  isMenuExpanded: false,
+  avatar: "",
+  brand: "",
+  copyright: "",
+  github: "",
+  linkedin: "",
+  links: [],
+  twitter: ""
 };
 
-export default (
-  state: ConfigState = initialState,
-  action: Action
-): ConfigState => {
+export default (state: ConfigState = initialState, action: Action): ConfigState => {
   switch (action.type) {
-    case "TOGGLE_SIDEBAR":
+    case "TOGGLE_MENU":
       return {
         ...state,
-        isSidebarOpen: !state.isSidebarOpen
+        isMenuExpanded: !state.isMenuExpanded
       };
-
+    case "MENU_INIT_SUCCESS":
+      return {
+        ...state,
+        ...action.payload.data
+      };
     default:
       return state;
   }

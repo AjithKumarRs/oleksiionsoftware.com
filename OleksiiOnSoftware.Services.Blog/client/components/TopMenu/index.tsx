@@ -1,21 +1,30 @@
 // Framework
 import * as React from "react";
 import styled from "theme";
+import { connect, Store, Dispatch } from "react-redux";
 
 // Semantic UI
 import { Menu, MenuItemProps } from "semantic-ui-react";
 
-// Types
-import { Link } from "types";
+// Actions
+import { push } from "actions";
 
-interface Props {
+// Types
+import { RootState, Link } from "types";
+
+interface TopMenuProps {
   className?: string;
+
+  expanded: boolean;
   links: Link[];
+}
+
+interface TopMenuDispatchProps {
   onLinkClick: (link: Link) => void;
 }
 
 // Components
-class TopMenu extends React.Component<Props> {
+class TopMenu extends React.Component<TopMenuProps & TopMenuDispatchProps> {
   handleLinkClick = (e: React.SyntheticEvent<HTMLAnchorElement>, lnk: Link) => {
     e.preventDefault();
 
@@ -30,7 +39,7 @@ class TopMenu extends React.Component<Props> {
             <a
               className={"menu-item"}
               key={lnk.id}
-              onClick={(e) => this.handleLinkClick(e, lnk)}
+              onClick={e => this.handleLinkClick(e, lnk)}
               href={"https://oleksiionsoftware.com" + lnk.id}
             >
               {lnk.title}
@@ -43,18 +52,19 @@ class TopMenu extends React.Component<Props> {
 
 // Styled Components
 const StyledTopMenu = styled(TopMenu)`
+  display: ${(p: TopMenuProps) => (p.expanded ? "block" : "none")};
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
-  width: 300px;
+  box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.15);
   text-align: center;
 
   .menu-item {
+    display: block;
     font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
     font-weight: 400;
     font-style: normal;
     color: rgba(0, 0, 0, 0.54);
-    margin-left: 24px;
     text-transform: uppercase;
     font-size: 16px;
     line-height: 1.5;
@@ -66,43 +76,30 @@ const StyledTopMenu = styled(TopMenu)`
     color: rgba(0, 0, 0, 0.76);
   }
 
-  @media (min-width: 320px) {
-    img {
-      max-width: 300px;
-    }
-  }
-
-  @media (min-width: 375px) {
-    width: 355px;
-
-    img {
-      max-width: 355px;
-    }
-  }
-
-  @media (min-width: 425px) {
-    width: 405px;
-
-    img {
-      max-width: 405px;
-    }
-  }
-
   @media (min-width: 768px) {
     width: 748px;
+    display: block !important;
 
-    img {
-      max-width: 748px;
+    .menu-item {
+      display: inline-block;
+      margin-left: 24px;
     }
   }
 
   @media (min-width: 1024px) {
     width: 1004px;
-
-    img {
-      max-width: 1004px;
-    }
   }
 `;
 
-export { StyledTopMenu as TopMenu };
+// Connected Components
+const StyledTopMenuConnected = connect(
+  (state: RootState): TopMenuProps => ({
+    expanded: state.config.isMenuExpanded,
+    links: state.config.links
+  }),
+  (dispatch: Dispatch<RootState>): TopMenuDispatchProps => ({
+    onLinkClick: link => dispatch(push(link.id))
+  })
+)(StyledTopMenu);
+
+export { StyledTopMenuConnected as TopMenu };

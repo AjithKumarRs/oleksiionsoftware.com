@@ -7,4 +7,4 @@ export * from "./filterByTag";
 export * from "./changePage";
 export * from "./homeInit";
 export * from "./postInit";
-export * from "./sidebar";
+export * from "./menu";

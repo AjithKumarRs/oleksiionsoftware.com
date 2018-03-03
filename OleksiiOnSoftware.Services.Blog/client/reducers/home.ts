@@ -1,4 +1,4 @@
-import { HomeState, Action } from "types";
+import { HomeState, Action, HomeEndpointServerResponse } from "types";
 
 const initialState: HomeState = {
   isInited: false,
@@ -6,13 +6,10 @@ const initialState: HomeState = {
   pageSize: 10,
   postsCount: 0,
   pagesCount: 0,
-  brand: "",
-  copyright: "",
   posts: [],
   filter: {
     by: "none"
-  },
-  links: []
+  }
 };
 
 export default (state: HomeState = initialState, action: Action): HomeState => {

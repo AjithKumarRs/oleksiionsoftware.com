@@ -1,6 +1,9 @@
 // Libs
 import { api } from "utils";
 
+// Actions
+import { menuInitSuccess } from "./menu";
+
 // Types
 import {
   Dispatch,
@@ -14,9 +17,7 @@ import {
 } from "types";
 
 // Actions
-export const homeFilterByCategoryAsync = (
-  categoryId: string
-): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
+export const homeFilterByCategoryAsync = (categoryId: string): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
   try {
     dispatch(homeFilterByCategory());
 
@@ -34,6 +35,7 @@ export const homeFilterByCategoryAsync = (
       .setParams(params)
       .fetch();
 
+    dispatch(menuInitSuccess(json));
     return dispatch(homeFilterByCategorySuccess(categoryId, json));
   } catch (ex) {
     console.error(ex);
@@ -49,10 +51,7 @@ const homeFilterByCategoryProgress = (): HomeFilterByCategoryProgressAction => (
   type: "HOME_FILTER_BY_CATEGORY_PROGRESS"
 });
 
-const homeFilterByCategorySuccess = (
-  category: string,
-  data: HomeEndpointServerResponse
-): HomeFilterByCategorySuccessAction => ({
+const homeFilterByCategorySuccess = (category: string, data: HomeEndpointServerResponse): HomeFilterByCategorySuccessAction => ({
   type: "HOME_FILTER_BY_CATEGORY_SUCCESS",
   payload: {
     category,

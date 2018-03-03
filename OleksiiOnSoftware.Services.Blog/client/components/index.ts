@@ -32,8 +32,11 @@ import { PostTag } from "./PostTag";
 import { Progress } from "./Progress";
 import { ScrollToTop } from "./ScrollToTop";
 import { TopBar } from "./TopBar";
+import { TopBarIcons } from "./TopBarIcons";
 import { TopBrand } from "./TopBrand";
+import { TopBarText } from "./TopBarText";
 import { TopMenu } from "./TopMenu";
+import { TopMenuHandler } from "./TopMenuHandler";
 
 export {
   App,
@@ -62,6 +65,9 @@ export {
   Progress,
   ScrollToTop,
   TopBar,
+  TopBarText,
+  TopBarIcons,
   TopBrand,
-  TopMenu
+  TopMenu,
+  TopMenuHandler
 };

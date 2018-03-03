@@ -19,10 +19,14 @@ const PostHeaderH2 = styled.h2`
   color: rgba(0, 0, 0, 0.84);
   display: block;
   padding-bottom: 5px;
-  text-align: justify;
+  text-align: center;
   line-height: 1.5;
   letter-spacing: 0.5;
   word-spacing: 5;
+
+  @media (min-width: 768px) {
+    text-align: justify;
+  }
 `;
 
 const PostHeaderA = styled.a`
@@ -33,7 +37,7 @@ const PostHeaderA = styled.a`
   color: rgba(0, 0, 0, 0.84);
   display: block;
   padding-bottom: 0px;
-  text-align: justify;
+  text-align: center;
   line-height: 1.5;
   letter-spacing: 0.5;
   word-spacing: 5;
@@ -42,6 +46,10 @@ const PostHeaderA = styled.a`
   &:hover {
     color: rgba(0, 0, 0, 0.84);
     text-decoration: underline;
+  }
+
+  @media (min-width: 768px) {
+    text-align: justify;
   }
 `;
 
@@ -59,10 +67,7 @@ class PostHeader extends React.Component<Props> {
   render() {
     if (this.props.clickable) {
       return (
-        <PostHeaderA
-          href={"https://oleksiionsoftware.com/post/" + this.props.id}
-          onClick={this.handleHeaderClick}
-        >
+        <PostHeaderA href={"https://oleksiionsoftware.com/post/" + this.props.id} onClick={this.handleHeaderClick}>
           {this.props.children}
         </PostHeaderA>
       );

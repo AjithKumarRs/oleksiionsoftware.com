@@ -1,6 +1,9 @@
 // Libs
 import { api } from "utils";
 
+// Actions
+import { menuInitSuccess } from "./menu";
+
 // Types
 import {
   Dispatch,
@@ -14,10 +17,7 @@ import {
 } from "types";
 
 // Actions
-export const homeFilterByTagAsync = (tagId: string): ThunkAction => async (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
+export const homeFilterByTagAsync = (tagId: string): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
   try {
     dispatch(homeFilterByTag());
 
@@ -35,6 +35,7 @@ export const homeFilterByTagAsync = (tagId: string): ThunkAction => async (
       .setParams(params)
       .fetch();
 
+    dispatch(menuInitSuccess(json));
     return dispatch(homeFilterByTagSuccess(tagId, json));
   } catch (ex) {
     console.error(ex);
@@ -50,10 +51,7 @@ const homeFilterByTagProgress = (): HomeFilterByTagProgressAction => ({
   type: "HOME_FILTER_BY_TAG_PROGRESS"
 });
 
-const homeFilterByTagSuccess = (
-  tag: string,
-  data: HomeEndpointServerResponse
-): HomeFilterByTagSuccessAction => ({
+const homeFilterByTagSuccess = (tag: string, data: HomeEndpointServerResponse): HomeFilterByTagSuccessAction => ({
   type: "HOME_FILTER_BY_TAG_SUCCESS",
   payload: {
     tag,

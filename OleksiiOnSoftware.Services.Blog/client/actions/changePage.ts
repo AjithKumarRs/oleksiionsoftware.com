@@ -1,6 +1,9 @@
 // Libs
 import { api } from "utils";
 
+// Actions
+import { menuInitSuccess } from "./menu";
+
 // Types
 import {
   Dispatch,
@@ -14,10 +17,7 @@ import {
 } from "types";
 
 // Actions
-export const homeChangePageAsync = (
-  pageIndex: number,
-  pageSize: number
-): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
+export const homeChangePageAsync = (pageIndex: number, pageSize: number): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
   try {
     dispatch(homeChangePage());
 
@@ -36,6 +36,7 @@ export const homeChangePageAsync = (
       .setParams(params)
       .fetch();
 
+    dispatch(menuInitSuccess(json));
     return dispatch(homeChangePageSuccess(json));
   } catch (ex) {
     console.error(ex);
@@ -51,9 +52,7 @@ const homeChangePageProgress = (): HomeChangePageProgressAction => ({
   type: "HOME_CHANGE_PAGE_PROGRESS"
 });
 
-const homeChangePageSuccess = (
-  data: HomeEndpointServerResponse
-): HomeChangePageSuccessAction => ({
+const homeChangePageSuccess = (data: HomeEndpointServerResponse): HomeChangePageSuccessAction => ({
   type: "HOME_CHANGE_PAGE_SUCCESS",
   payload: {
     data

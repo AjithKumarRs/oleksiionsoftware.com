@@ -10,37 +10,18 @@ import { init } from "decorators";
 import { PostItem, TopBar } from "components";
 
 // Semantic UI
-import {
-  Grid,
-  Segment,
-  Item,
-  Icon,
-  Sidebar,
-  Menu,
-  Breadcrumb,
-  Header
-} from "semantic-ui-react";
+import { Grid, Segment, Item, Icon, Sidebar, Menu, Breadcrumb, Header } from "semantic-ui-react";
 
 // Types
-import {
-  RootState,
-  Post as PostType,
-  Link,
-  Category,
-  Tag,
-  HomeInitActions,
-  PostInitActions
-} from "types";
+import { RootState, Post as PostType, Link, Category, Tag, HomeInitActions, PostInitActions } from "types";
 
 // Actions
-import { toggleSidebar, postInitAsync, push } from "actions";
+import { postInitAsync, push } from "actions";
 
 // Types
 interface Props {
   className?: string;
 
-  brand: string;
-  links: Link[];
   post: PostType;
 }
 
@@ -64,11 +45,7 @@ class PostComponent extends React.Component<Props & DispatchProps> {
   render() {
     return (
       <div className={this.props.className}>
-        <TopBar
-          brand={this.props.brand}
-          links={this.props.links}
-          onLinkClick={this.handleLinkClick}
-        />
+        <TopBar />
 
         <PostItem
           className={"post"}
@@ -86,31 +63,33 @@ class PostComponent extends React.Component<Props & DispatchProps> {
 // Styled Components
 const PostStyled = styled(PostComponent)`
   .post {
-    margin-top: 160px;
+    margin-top: 0px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  @media (min-width: 768px) {
+    .post {
+      margin-top: 140px;
+    }
   }
 `;
 
 // Connected Components
 const PostConnected = connect(
   (state: RootState): Props => ({
-    brand: state.post.brand,
-    links: state.post.links,
     post: state.post as PostType
   }),
   (dispatch: Dispatch<RootState>): DispatchProps => ({
     openLink: link => dispatch(push(link.id)),
     filterByDate: date => dispatch(push(`/posts/date/${date}`)),
-    filterByCategory: category =>
-      dispatch(push(`/posts/category/${category.id}`)),
+    filterByCategory: category => dispatch(push(`/posts/category/${category.id}`)),
     filterByTag: tag => dispatch(push(`/posts/tag/${tag.id}`))
   })
 )(PostStyled);
 
-const PostInited = init(
-  (store: Store<RootState>, match: match<{ postId: string }>) =>
-    store.dispatch<any>(postInitAsync(match.params.postId))
+const PostInited = init((store: Store<RootState>, match: match<{ postId: string }>) =>
+  store.dispatch<any>(postInitAsync(match.params.postId))
 )(PostConnected);
 
 export { PostInited as Post };

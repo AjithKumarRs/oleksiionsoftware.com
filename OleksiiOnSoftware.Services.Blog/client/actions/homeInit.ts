@@ -1,6 +1,9 @@
 // Libs
 import { api } from "utils";
 
+// Actions
+import { menuInitSuccess } from "./menu";
+
 // Types
 import {
   Dispatch,
@@ -14,10 +17,7 @@ import {
 } from "types";
 
 // Actions
-export const homeInitAsync = (): ThunkAction => async (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
+export const homeInitAsync = (): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
   try {
     dispatch(homeInit());
 
@@ -30,6 +30,7 @@ export const homeInitAsync = (): ThunkAction => async (
       .addPath(state.config.hostname)
       .fetch();
 
+    dispatch(menuInitSuccess(json));
     return dispatch(homeInitSuccess(json));
   } catch (ex) {
     console.error(ex);
@@ -45,9 +46,7 @@ const homeInitProgress = (): HomeInitProgressAction => ({
   type: "HOME_INIT_PROGRESS"
 });
 
-const homeInitSuccess = (
-  data: HomeEndpointServerResponse
-): HomeInitSuccessAction => ({
+const homeInitSuccess = (data: HomeEndpointServerResponse): HomeInitSuccessAction => ({
   type: "HOME_INIT_SUCCESS",
   payload: {
     data

@@ -1,6 +1,9 @@
 // Libs
 import { api } from "utils";
 
+// Actions
+import { menuInitSuccess } from "./menu";
+
 // Types
 import {
   Dispatch,
@@ -14,10 +17,7 @@ import {
 } from "types";
 
 // Actions
-export const postInitAsync = (postId: string): ThunkAction => async (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
+export const postInitAsync = (postId: string): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
   try {
     dispatch(postInit());
 
@@ -32,6 +32,7 @@ export const postInitAsync = (postId: string): ThunkAction => async (
       .addPath(postId)
       .fetch();
 
+    dispatch(menuInitSuccess(json));
     return dispatch(postInitSuccess(json));
   } catch (ex) {
     console.error(ex);
@@ -47,9 +48,7 @@ const postInitProgress = (): PostInitProgressAction => ({
   type: "POST_INIT_PROGRESS"
 });
 
-const postInitSuccess = (
-  data: PostEndpointServerResponse
-): PostInitSuccessAction => ({
+const postInitSuccess = (data: PostEndpointServerResponse): PostInitSuccessAction => ({
   type: "POST_INIT_SUCCESS",
   payload: {
     data

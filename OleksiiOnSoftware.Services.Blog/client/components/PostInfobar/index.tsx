@@ -26,19 +26,8 @@ interface Props {
 const PostInfobar = (props: Props) => (
   <div className={props.className}>
     {props.date && <PostDate onClick={props.onDateClicked} date={props.date} />}
-
-    {props.category && (
-      <PostCategory
-        onClick={props.onCategoryClicked}
-        category={props.category}
-      />
-    )}
-
-    {props.tags &&
-      props.tags.map(tag => (
-        <PostTag key={tag.id} onClick={props.onTagClicked} tag={tag} />
-      ))}
-
+    {props.category && <PostCategory onClick={props.onCategoryClicked} category={props.category} />}
+    {props.tags && props.tags.map(tag => <PostTag key={tag.id} onClick={props.onTagClicked} tag={tag} />)}
     {props.comments && <PostComments url={props.id} />}
   </div>
 );
@@ -47,9 +36,14 @@ const PostInfobar = (props: Props) => (
 const StyledPostInfobar = styled(PostInfobar)`
   margin-top: 10px;
   margin-bottom: 10px;
+  text-align: center;
+  @media (min-width: 768px) {
+    text-align: left;
+  }
 
   .label {
     font-size: 14px !important;
+    margin-bottom: 5px !important;
   }
 `;
 

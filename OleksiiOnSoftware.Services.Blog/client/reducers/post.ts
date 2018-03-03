@@ -1,15 +1,8 @@
 import { PostState, Action } from "types";
 
 const initialState: PostState = {
-  brand: "",
-  avatar: "",
-  comments: true,
-  copyright: "",
-  github: "",
-  linkedin: "",
-  twitter: "",
+  id: "",
   url: "",
-  links: [],
   body: "",
   short: "",
   category: {
@@ -17,8 +10,8 @@ const initialState: PostState = {
     title: ""
   },
   date: "",
-  id: "",
   infobar: false,
+  comments: true,
   tags: [],
   title: ""
 };

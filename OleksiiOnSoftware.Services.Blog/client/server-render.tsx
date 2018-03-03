@@ -46,24 +46,14 @@ module.exports = async function(req: Request, res: Response) {
       pageSize: 10,
       postsCount: 0,
       pagesCount: 0,
-      brand: "",
-      copyright: "",
       posts: [],
       filter: {
         by: "none"
-      },
-      links: []
+      }
     },
     post: {
-      brand: "",
-      avatar: "",
-      comments: true,
-      copyright: "",
-      github: "",
-      linkedin: "",
-      twitter: "",
+      id: "",
       url: "",
-      links: [],
       body: "",
       short: "",
       category: {
@@ -71,14 +61,21 @@ module.exports = async function(req: Request, res: Response) {
         title: ""
       },
       date: "",
-      id: "",
       infobar: false,
+      comments: true,
       tags: [],
       title: ""
     },
     config: {
       hostname: req.hostname,
-      isSidebarOpen: true
+      isMenuExpanded: false,
+      avatar: "",
+      brand: "",
+      copyright: "",
+      github: "",
+      linkedin: "",
+      links: [],
+      twitter: ""
     }
   });
 
@@ -102,7 +99,6 @@ module.exports = async function(req: Request, res: Response) {
   );
 
   const styleTags = (sheet as ServerStyleSheet).getStyleTags();
-  console.log(styleTags);
 
   // Return a complete page with rendered component and redux store state
   res.send(`
@@ -111,13 +107,13 @@ module.exports = async function(req: Request, res: Response) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>oleksiionsoftware.com</title>
-        
-        ${styleTags}
 
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/themes/prism-okaidia.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/plugins/line-numbers/prism-line-numbers.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/plugins/command-line/prism-command-line.css" />
+
+        ${styleTags}
 
         <script id="dsq-count-scr" src="//oleksiionsoftware.disqus.com/count.js" async></script>
       </head>
