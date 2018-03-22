@@ -81,7 +81,7 @@
 
             if (!string.IsNullOrEmpty(_filterByCategory))
             {
-                query = query.Where(_ => _.CategoryUrl == _filterByCategory);
+                query = query.Where(_ => !string.IsNullOrEmpty(_.CategoryUrl) && _.CategoryUrl.StartsWith(_filterByCategory));
 
                 var category = state.Categories.FirstOrDefault(_ => _.Url == _filterByCategory);
                 filter = new FilterHomeView { By = "category", Title = category.Title };
