@@ -37,6 +37,7 @@ render(
   document.getElementById("root")
 );
 
-// Render the dev tools
-// TODO: Remove for production builds
-render(<DevTools store={store} />, document.getElementById("tools"));
+// Render the dev tools in dev mode
+if (process.env.NODE_ENV === "development") {
+  render(<DevTools store={store} />, document.getElementById("tools"));
+}
