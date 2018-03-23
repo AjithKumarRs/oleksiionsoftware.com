@@ -4,6 +4,7 @@ import styled from "theme";
 import { Dispatch } from "redux";
 import { connect, Store } from "react-redux";
 import { match } from "react-router";
+import { Helmet } from "react-helmet";
 import { init } from "decorators";
 
 // Custom UI
@@ -45,6 +46,10 @@ class PostComponent extends React.Component<Props & DispatchProps> {
   render() {
     return (
       <div className={this.props.className}>
+        <Helmet>
+            <title>{this.props.post.title}</title>
+        </Helmet>
+
         <TopBar />
 
         <PostItem

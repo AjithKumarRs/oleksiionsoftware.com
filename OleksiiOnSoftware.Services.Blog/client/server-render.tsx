@@ -5,6 +5,7 @@ import "url-search-params-polyfill";
 import * as React from "react";
 import { Request, Response } from "express";
 import { Provider } from "react-redux";
+import { Helmet } from "react-helmet";
 import { renderToString } from "react-dom/server";
 import { matchPath } from "react-router-dom";
 import { ConnectedRouter } from "react-router-redux";
@@ -100,13 +101,15 @@ module.exports = async function(req: Request, res: Response) {
 
   const styleTags = (sheet as ServerStyleSheet).getStyleTags();
 
+  const helmet = Helmet.renderStatic();
+
   // Return a complete page with rendered component and redux store state
   res.send(`
     <html>
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>oleksiionsoftware.com</title>
+        ${helmet.title.toString()}
 
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/themes/prism-okaidia.css" />

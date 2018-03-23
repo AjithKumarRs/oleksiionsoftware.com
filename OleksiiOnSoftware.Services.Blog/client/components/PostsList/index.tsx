@@ -3,6 +3,7 @@ import * as React from "react";
 import styled from "theme";
 import { connect, Store } from "react-redux";
 import { match } from "react-router";
+import { Helmet } from "react-helmet";
 import { init } from "decorators";
 
 // UI
@@ -54,6 +55,10 @@ export class PostsList extends React.Component<Props & DispatchProps> {
   render() {
     return (
       <div className={this.props.className}>
+        <Helmet>
+          <title>{this.props.filter.title ? this.props.filter.title : "oleksiionsoftware.com"}</title>
+        </Helmet>
+
         <TopBar />
 
         <div className={"posts"}>
